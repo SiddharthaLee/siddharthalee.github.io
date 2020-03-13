@@ -37,6 +37,9 @@
 <p><strong>5.运行文件</strong><br>这个时候我们已经配置完成啦<br>可以开始运行我们刚才创建的测试代码啦<br>F5：VScode调试<br>CTRL+ALT+N:code runner调试<br><img src="https://s2.ax1x.com/2020/03/08/3zTzTI.png" alt="11.png"><br><img src="https://s2.ax1x.com/2020/03/08/3z7ut0.png" alt="12.png"></p>
 <h2 id="至此，整个配置就完成啦"><a href="#至此，整个配置就完成啦" class="headerlink" title="至此，整个配置就完成啦"></a>至此，整个配置就完成啦</h2><p>注：<br>为什么不直接用VisualStudio?<br>1.太大啦，只安一个C++环境就要少说1G，完整部件安装差不多10G就没了<br>2.VS使用的VSC++，很多C++支持的功能VC都不支持，所以我们选择从Linux GCC移植过来的MinGW（建议学习C/C++尽量使用gcc编译器，clang好像也不错，<strong>建议不要使用</strong>万恶之源：VC++6</p>
 ]]></content>
+      <tags>
+        <tag>C/C++</tag>
+      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
