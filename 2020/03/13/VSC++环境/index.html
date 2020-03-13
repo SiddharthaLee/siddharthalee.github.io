@@ -20,29 +20,44 @@
     var CONFIG = {"hostname":"lcjlee.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Tomorrow is another day">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Rise">
-<meta property="og:url" content="lcjlee.com/index.html">
+  <meta name="description" content="win10 VScode配置C&#x2F;C++环境一、下载需要的工具1.下载VScode 2.安装cpptools工具打开VScode，按照以下步骤安装3.安装code runner工具在VScode中编译文件，结束后并不会像我们经常使用的IDE一样，终端会停留在面前然后告诉你“按任意键继续”，在VScode中，编译运行完成后往往cmd会一闪而过，然后直接：The program ‘d:\MinGW\Pr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="win10在VScode上配置C&#x2F;C++环境">
+<meta property="og:url" content="lcjlee.com/2020/03/13/VSC++%E7%8E%AF%E5%A2%83/index.html">
 <meta property="og:site_name" content="Rise">
-<meta property="og:description" content="Tomorrow is another day">
+<meta property="og:description" content="win10 VScode配置C&#x2F;C++环境一、下载需要的工具1.下载VScode 2.安装cpptools工具打开VScode，按照以下步骤安装3.安装code runner工具在VScode中编译文件，结束后并不会像我们经常使用的IDE一样，终端会停留在面前然后告诉你“按任意键继续”，在VScode中，编译运行完成后往往cmd会一闪而过，然后直接：The program ‘d:\MinGW\Pr">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTZi6.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zT8ot.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTJFP.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTdyQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTBes.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTyF0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTWy4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTIT1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTHfK.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTvmd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTzTI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3z7ut0.png">
+<meta property="article:published_time" content="2020-03-13T14:09:15.000Z">
+<meta property="article:modified_time" content="2020-03-13T14:13:27.857Z">
 <meta property="article:author" content="JCL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.ax1x.com/2020/03/08/3zTZi6.png">
 
-<link rel="canonical" href="lcjlee.com/">
+<link rel="canonical" href="lcjlee.com/2020/03/13/VSC++%E7%8E%AF%E5%A2%83/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false
+    isHome : false,
+    isPost : true
   };
 </script>
 
-  <title>Rise</title>
+  <title>win10在VScode上配置C/C++环境 | Rise</title>
   
 
 
@@ -201,10 +216,10 @@
             
 
   <div class="posts-expand">
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="lcjlee.com/2020/03/13/VSC++%E7%8E%AF%E5%A2%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -218,8 +233,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/13/VSC++%E7%8E%AF%E5%A2%83/" class="post-title-link" itemprop="url">win10在VScode上配置C/C++环境</a>
+          win10在VScode上配置C/C++环境
         </h1>
 
         <div class="post-meta">
@@ -258,7 +272,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="win10-VScode配置C-C-环境"><a href="#win10-VScode配置C-C-环境" class="headerlink" title="win10 VScode配置C/C++环境"></a>win10 VScode配置C/C++环境</h1><h2 id="一、下载需要的工具"><a href="#一、下载需要的工具" class="headerlink" title="一、下载需要的工具"></a>一、下载需要的工具</h2><p><strong>1.下载VScode</strong></p>
+        <h1 id="win10-VScode配置C-C-环境"><a href="#win10-VScode配置C-C-环境" class="headerlink" title="win10 VScode配置C/C++环境"></a>win10 VScode配置C/C++环境</h1><h2 id="一、下载需要的工具"><a href="#一、下载需要的工具" class="headerlink" title="一、下载需要的工具"></a>一、下载需要的工具</h2><p><strong>1.下载VScode</strong></p>
 <p><strong>2.安装cpptools工具</strong><br>打开VScode，按照以下步骤安装<br><img src="https://s2.ax1x.com/2020/03/08/3zTZi6.png" alt="1.png"><br><strong>3.安装code runner工具</strong><br>在VScode中编译文件，结束后并不会像我们经常使用的IDE一样，终端会停留在面前然后告诉你“按任意键继续”，在VScode中，编译运行完成后往往cmd会一闪而过，然后直接：<br>The program ‘d:\MinGW\Projicts\test\test.exe’ has exited with code 0 (0x00000000).  </p>
 <p>这个时候我们往往会使用在结束的return语句前加上<strong>getchar()</strong> 或<br> <strong>system(“pause”)（注意：使用这个的时候需要加上头文件#include&lt;stdlib.h&gt;）</strong>     </p>
 <p>我们可以使用code runner工具来解决这个问题<br>首先和上面一样 找到这个插件并安装它     </p>
@@ -292,108 +306,52 @@
 <p><strong>5.运行文件</strong><br>这个时候我们已经配置完成啦<br>可以开始运行我们刚才创建的测试代码啦<br>F5：VScode调试<br>CTRL+ALT+N:code runner调试<br><img src="https://s2.ax1x.com/2020/03/08/3zTzTI.png" alt="11.png"><br><img src="https://s2.ax1x.com/2020/03/08/3z7ut0.png" alt="12.png"></p>
 <h2 id="至此，整个配置就完成啦"><a href="#至此，整个配置就完成啦" class="headerlink" title="至此，整个配置就完成啦"></a>至此，整个配置就完成啦</h2><p>注：<br>为什么不直接用VisualStudio?<br>1.太大啦，只安一个C++环境就要少说1G，完整部件安装差不多10G就没了<br>2.VS使用的VSC++，很多C++支持的功能VC都不支持，所以我们选择从Linux GCC移植过来的MinGW（建议学习C/C++尽量使用gcc编译器，clang好像也不错，<strong>建议不要使用</strong>万恶之源：VC++6</p>
 
-      
     </div>
 
     
     
     
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
         
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="lcjlee.com/2020/03/13/hello-world/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="http://q74q2iwtd.bkt.clouddn.com/touxiang.jpg">
-      <meta itemprop="name" content="JCL">
-      <meta itemprop="description" content="Tomorrow is another day">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rise">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/13/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-13 15:23:44" itemprop="dateCreated datePublished" datetime="2020-03-13T15:23:44+08:00">2020-03-13</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>357</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/13/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
   
 
   </div>
-
-  
-
 
 
           </div>
@@ -444,6 +402,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#win10-VScode配置C-C-环境"><span class="nav-number">1.</span> <span class="nav-text">win10 VScode配置C&#x2F;C++环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、下载需要的工具"><span class="nav-number">1.1.</span> <span class="nav-text">一、下载需要的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、配置环境变量"><span class="nav-number">1.2.</span> <span class="nav-text">二、配置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、开始配置C-环境"><span class="nav-number">1.3.</span> <span class="nav-text">三、开始配置C++环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#至此，整个配置就完成啦"><span class="nav-number">1.4.</span> <span class="nav-text">至此，整个配置就完成啦</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
