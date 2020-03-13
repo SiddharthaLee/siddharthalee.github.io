@@ -5,6 +5,7 @@
     <url>/2020/03/13/VSC++%E7%8E%AF%E5%A2%83/</url>
     <content><![CDATA[<h1 id="win10-VScode配置C-C-环境"><a href="#win10-VScode配置C-C-环境" class="headerlink" title="win10 VScode配置C/C++环境"></a>win10 VScode配置C/C++环境</h1><h2 id="一、下载需要的工具"><a href="#一、下载需要的工具" class="headerlink" title="一、下载需要的工具"></a>一、下载需要的工具</h2><p><strong>1.下载VScode</strong></p>
 <p><strong>2.安装cpptools工具</strong><br>打开VScode，按照以下步骤安装<br><img src="https://s2.ax1x.com/2020/03/08/3zTZi6.png" alt="1.png"><br><strong>3.安装code runner工具</strong><br>在VScode中编译文件，结束后并不会像我们经常使用的IDE一样，终端会停留在面前然后告诉你“按任意键继续”，在VScode中，编译运行完成后往往cmd会一闪而过，然后直接：<br>The program ‘d:\MinGW\Projicts\test\test.exe’ has exited with code 0 (0x00000000).  </p>
+<a id="more"></a>
 <p>这个时候我们往往会使用在结束的return语句前加上<strong>getchar()</strong> 或<br> <strong>system(“pause”)（注意：使用这个的时候需要加上头文件#include&lt;stdlib.h&gt;）</strong>     </p>
 <p>我们可以使用code runner工具来解决这个问题<br>首先和上面一样 找到这个插件并安装它     </p>
 <p><img src="https://s2.ax1x.com/2020/03/08/3zT8ot.png" alt="2.png"></p>
