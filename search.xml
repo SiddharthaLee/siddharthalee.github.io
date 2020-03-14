@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hadoop伪分布式</title>
+    <url>/2020/03/14/Hadoop%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>win10在VScode上配置C/C++环境</title>
     <url>/2020/03/13/VSC++%E7%8E%AF%E5%A2%83/</url>
     <content><![CDATA[<h1 id="win10-VScode配置C-C-环境"><a href="#win10-VScode配置C-C-环境" class="headerlink" title="win10 VScode配置C/C++环境"></a>win10 VScode配置C/C++环境</h1><h2 id="一、下载需要的工具"><a href="#一、下载需要的工具" class="headerlink" title="一、下载需要的工具"></a>一、下载需要的工具</h2><p><strong>1.下载VScode</strong></p>
