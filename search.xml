@@ -1,9 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hadoop伪分布式</title>
+    <title>CentOS安装与联网</title>
+    <url>/2020/03/14/CentOS%E5%AE%89%E8%A3%85%E4%B8%8E%E8%81%94%E7%BD%91/</url>
+    <content><![CDATA[<h1 id="CentOS7虚拟机安装与联网"><a href="#CentOS7虚拟机安装与联网" class="headerlink" title="CentOS7虚拟机安装与联网"></a>CentOS7虚拟机安装与联网</h1><p>实验环境：VMware,CentOS7_x64</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>下载并安装VMware用于安装虚拟机，下载CentOS7镜像</p>
+<h2 id="CentOS7安装"><a href="#CentOS7安装" class="headerlink" title="CentOS7安装"></a>CentOS7安装</h2><h3 id="选用安装配置类型"><a href="#选用安装配置类型" class="headerlink" title="选用安装配置类型"></a>选用安装配置类型</h3><p>选用自定义类型配置创建虚拟机</p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/1.png" alt="1"></p>
+<h3 id="选择下载的镜像文件"><a href="#选择下载的镜像文件" class="headerlink" title="选择下载的镜像文件"></a>选择下载的镜像文件</h3><p>单击浏览，选择自己的镜像下载到的本地的位置</p>
+<p>如果提示“无法检测此光盘映像中的操作系统”可以忽略，直接下一步</p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/2.png" alt="2"></p>
+<h3 id="为虚拟机命名并选择安装位置"><a href="#为虚拟机命名并选择安装位置" class="headerlink" title="为虚拟机命名并选择安装位置"></a>为虚拟机命名并选择安装位置</h3><p><img src="http://q74q2iwtd.bkt.clouddn.com/3.png" alt="3"></p>
+<p><strong>其他步骤使用默认配置即可</strong></p>
+<h3 id="语言选择"><a href="#语言选择" class="headerlink" title="语言选择"></a>语言选择</h3><p>下拉到最底下，选择中文</p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/4.png" alt="4"></p>
+<h3 id="安装信息摘要"><a href="#安装信息摘要" class="headerlink" title="安装信息摘要"></a>安装信息摘要</h3><p>这里可能要稍稍等一下，如果图标上有感叹号就点进去然后点左上角完成即可</p>
+<p>待所有感叹号消失就可以点击开始安装啦</p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/5.png" alt="5"></p>
+<h3 id="设置root用户密码"><a href="#设置root用户密码" class="headerlink" title="设置root用户密码"></a>设置root用户密码</h3><p>方便起见，我们只设置root用户，不创建新用户，以后的所有操作也都在root用户上执行</p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/6.png" alt="6"></p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/7.png" alt="7"></p>
+<p>设置完成后耐心等待虚拟机安装完成就好啦（根据电脑配置这里安装速度也会不同，一般会需要10-30分钟）</p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/8.png" alt="8"></p>
+<p>安装完成！重启开始我们的网络配置吧！</p>
+<h2 id="CentOS网络配置"><a href="#CentOS网络配置" class="headerlink" title="CentOS网络配置"></a>CentOS网络配置</h2><h3 id="登录root用户"><a href="#登录root用户" class="headerlink" title="登录root用户"></a>登录root用户</h3><p>登录系统时，首先需要输入用户名，我们使用root用户登录</p>
+<p>注意，当鼠标切换到虚拟机里进行操作时，108键键盘的数字区域会默认关闭，需要NUMLock手动打开哟，否则可能输入很多次“正确”密码都会显示密码错误</p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/9.png" alt="9"></p>
+<h3 id="配置ifcfg-ens33文件"><a href="#配置ifcfg-ens33文件" class="headerlink" title="配置ifcfg-ens33文件"></a>配置ifcfg-ens33文件</h3><p>首先切换到网络配置文件夹下,使用ls命令即可看到文件夹下所有文件</p>
+<p><code>cd /etc/sysconfig/network-scripts</code></p>
+<p><code>ls</code></p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/10.png" alt="10"></p>
+<h4 id="Plan1"><a href="#Plan1" class="headerlink" title="Plan1."></a>Plan1.</h4><p>首先使用ip addr命令查看网卡配置项HWADDR</p>
+<p><code>ip addr</code></p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/11.png" alt="11"></p>
+<p>记录下这个后我们开始使用vi编辑器修改配置文件（进入时只能浏览，按i开始编辑）</p>
+<p><strong>HWADDR以及后面的子网IP，子网掩码，网关IP需要根据自己虚拟机情况输入，不要直接复制粘贴</strong></p>
+<p>点击VMware左上角菜单栏的编辑-虚拟网络编辑器</p>
+<p>在虚拟网络编辑器中选择NAT模式这一栏，再从下面打开NAT设置，即可查看自己虚拟机的子网IP，子网掩码以及网关</p>
+<p><strong>注意子网IP第四部分不能用0和1，建议使用101，然后其他虚拟机依次102，103…即可</strong></p>
+<p><code>vi ifcfg-ens33</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TYPE&#x3D;Ethernet</span><br><span class="line">PROXY_METHOD&#x3D;none</span><br><span class="line">BROWSER_ONLY&#x3D;no</span><br><span class="line">BOOTPROTO&#x3D;static  &#x2F;&#x2F;修改此项</span><br><span class="line">DEFROUTE&#x3D;yes</span><br><span class="line">IPV4_FAILURE_FATAL&#x3D;no</span><br><span class="line">IPV6INIT&#x3D;yes</span><br><span class="line">IPV6_AUTOCONF&#x3D;yes</span><br><span class="line">IPV6_DEFROUTE&#x3D;yes</span><br><span class="line">IPV6_FAILURE_FATAL&#x3D;no</span><br><span class="line">IPV6_ADDR_GEN_MODE&#x3D;stable-privacy</span><br><span class="line">NAME&#x3D;ens33</span><br><span class="line">UUID&#x3D;767e62e3-20e7-43dd-9268-d58142a34072</span><br><span class="line">DEVICE&#x3D;ens33</span><br><span class="line">ONBOOT&#x3D;yes	&#x2F;&#x2F;修改此项</span><br><span class="line">HWADDR&#x3D;00:0c:29:e1:9f:fd				&#x2F;&#x2F;添加此项</span><br><span class="line">IPADDR&#x3D;192.168.48.101		&#x2F;&#x2F;添加此项，为子网IP</span><br><span class="line">NETMASK&#x3D;255.255.255.0		&#x2F;&#x2F;添加此项，为子网掩码</span><br><span class="line">GATEWAY&#x3D;192.168.48.2		&#x2F;&#x2F;添加此项，为网关IP</span><br><span class="line">DNS1&#x3D;8.8.8.8		&#x2F;&#x2F;添加此项</span><br><span class="line">DNS2&#x3D;8.8.8.4.4		&#x2F;&#x2F;添加此项</span><br></pre></td></tr></table></figure>
+
+<p>修改完后保存并退出vi编辑器（先按ESC，然后输入<code>:wq</code>，最后按回车即可保存退出）</p>
+<p>修改后我们重启一下网络服务</p>
+<p><code>service network restart</code></p>
+<p><strong>如果该方法配置完后依然无法联网，我们再使用方法2配置</strong></p>
+<h4 id="Plan2"><a href="#Plan2" class="headerlink" title="Plan2."></a>Plan2.</h4><p>按上述方法进入虚拟网络编辑器</p>
+<p>点击最下面的更改设置，弹框选择是，使用管理员权限开始重新配置</p>
+<p>首先还原默认设置，还原完成后取消使用本地DHCP服务，然后将子网IP修改为<code>192.168.48.0</code></p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/12.png" alt="12"></p>
+<p>接着我们和上面一样使用vi编辑器修改ifcfg-ens33配置文件（进入时只能浏览，按i开始编辑）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TYPE&#x3D;Ethernet</span><br><span class="line">PROXY_METHOD&#x3D;none</span><br><span class="line">BROWSER_ONLY&#x3D;no</span><br><span class="line">BOOTPROTO&#x3D;static	&#x2F;&#x2F;修改此项</span><br><span class="line">DEFROUTE&#x3D;yes</span><br><span class="line">IPV4_FAILURE_FATAL&#x3D;no</span><br><span class="line">IPV6INIT&#x3D;yes</span><br><span class="line">IPV6_AUTOCONF&#x3D;yes</span><br><span class="line">IPV6_DEFROUTE&#x3D;yes</span><br><span class="line">IPV6_FAILURE_FATAL&#x3D;no</span><br><span class="line">IPV6_ADDR_GEN_MODE&#x3D;stable-privacy</span><br><span class="line">NAME&#x3D;ens33</span><br><span class="line">UUID&#x3D;767e62e3-20e7-43dd-9268-d58142a34072</span><br><span class="line">DEVICE&#x3D;ens33</span><br><span class="line">ONBOOT&#x3D;yes		&#x2F;&#x2F;修改此项</span><br><span class="line">NM_CONTROLLED&#x3D;no	&#x2F;&#x2F;添加此项</span><br><span class="line">IPV6_PRIVACY&#x3D;no		&#x2F;&#x2F;添加此项</span><br><span class="line">IPADDR&#x3D;192.168.48.101	&#x2F;&#x2F;添加子网IP</span><br><span class="line">NETMASK&#x3D;255.255.255.0	&#x2F;&#x2F;添加子网掩码</span><br><span class="line">GATEWAY&#x3D;192.168.48.2	&#x2F;&#x2F;添加网关IP</span><br></pre></td></tr></table></figure>
+
+<p>修改完后保存并退出vi编辑器（先按ESC，然后输入<code>:wq</code>，最后按回车即可保存退出）</p>
+<p>接着我们修改DNS地址</p>
+<p><code>cd /root</code></p>
+<p><code>vi /etc/resolv.conf</code></p>
+<p>先将文件内本来有的内容删除，然后写入：</p>
+<p><code>nameserver 114.114.114.114</code></p>
+<p>修改后我们重启一下网络服务</p>
+<p><code>service network restart</code></p>
+<h3 id="测试网络是否配置成功"><a href="#测试网络是否配置成功" class="headerlink" title="测试网络是否配置成功"></a>测试网络是否配置成功</h3><p>重启完网络服务后，我们使用ping命令测试网络是否配置成功</p>
+<p><code>ping www.baidu.com</code></p>
+<p>如果显示如下内容成功返回数据，说明网络配置成功</p>
+<p><img src="http://q74q2iwtd.bkt.clouddn.com/13.png" alt="13"></p>
+<p>如果显示</p>
+<p><code>ping:www.baidu.com:Name or service not known</code></p>
+<p>说明配置存在问题，请参考前面步骤检查问题（很有可能是resolv.conf没有修改完成（修改完应该只有一行<code>nameserver 114.114.114.114</code>））</p>
+]]></content>
+      <tags>
+        <tag>Hadoop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hadoop伪分布式搭建</title>
     <url>/2020/03/14/Hadoop%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h1 id="Hadoop伪分布式搭建"><a href="#Hadoop伪分布式搭建" class="headerlink" title="Hadoop伪分布式搭建"></a>Hadoop伪分布式搭建</h1><p>实验环境：VMware,CentOS7_x64,</p>
+]]></content>
+      <tags>
+        <tag>Hadoop</tag>
+      </tags>
   </entry>
   <entry>
     <title>win10在VScode上配置C/C++环境</title>
