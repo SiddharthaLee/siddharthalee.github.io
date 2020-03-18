@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="lcjlee.com/"/>
-  <updated>2020-03-14T15:45:38.586Z</updated>
+  <updated>2020-03-18T17:41:56.368Z</updated>
   <id>lcjlee.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Hadoop单机模式/伪分布式搭建</title>
+    <link href="lcjlee.com/2020/03/18/Hadoop%E5%8D%95%E6%9C%BA%E6%A8%A1%E5%BC%8F-%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%AD%E5%BB%BA/"/>
+    <id>lcjlee.com/2020/03/18/Hadoop%E5%8D%95%E6%9C%BA%E6%A8%A1%E5%BC%8F-%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%AD%E5%BB%BA/</id>
+    <published>2020-03-18T15:34:17.000Z</published>
+    <updated>2020-03-18T17:41:56.368Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Hadoop单机模式-伪分布式搭建"><a href="#Hadoop单机模式-伪分布式搭建" class="headerlink" title="Hadoop单机模式/伪分布式搭建"></a>Hadoop单机模式/伪分布式搭建</h1><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><h3 id="Hadoop三种安装模式简介"><a href="#Hadoop三种安装模式简介" class="headerlink" title="Hadoop三种安装模式简介"></a>Hadoop三种安装模式简介</h3><p>Hadoop共有三种安装模式可以使用：单机模式、伪分布式、完全分布式</p><p>1.Hadoop单机模式<br>单机模式是Hadoop默认的安装模式，这种安装模式主要就是并不配置更多的配置文件，只是保守的去设置默认的几个配置文件中的初始化参数，他并不与其他节点进行交互，并且也不使用HDFS文件系统，它主要就是为了调试MapReduce程序而生。</p><p>2.Hadoop伪分布式安装模式<br>Hadoop伪分布式安装，需要配置5个常规的配置文件（XML），并且这里涉及到了NameNode和DataNode节点交互问题，而且NameNode和DataNode在同一个节点上，还需要配置互信。其实从严格意义上来讲，我们的伪分布式集群，就已经可以称之为真正意义上的集群了，而且这里也包含了hdfs和MapReduce所有组件，只不过就是所有组件在同一个节点上而已。</p><p>3.Hadoop完全分布式安装模式<br>Hadoop完全分布式集群主要分为：常规Hadoop完全分布式集群和Hadoop HA集群（这里我们主要针对的是NameNode个数和NameNode的高可用保障机制而言）。由此可知较伪分布式集群而言，我们的完全分布式集群，所有处理节点并不在同一个节点上，而是在多个节点上。</p><h3 id="搭建环境准备"><a href="#搭建环境准备" class="headerlink" title="搭建环境准备"></a>搭建环境准备</h3><p>这里介绍本文所用的搭建环境</p><p>1、虚拟机：使用VMware15.5,XShell6&amp;Xftp,CentOS7</p><p>2、Hadoop：Hadoop-2.7.7，jdk-8u231</p><p>需要提前下载并安装好虚拟机相关软件，并下载所需Hadoop与jdk的压缩包（.tar.gz)</p><p>使用前请确认虚拟机网络已经配置好且XShell可以连接到虚拟机</p><h2 id="通用设置配置"><a href="#通用设置配置" class="headerlink" title="通用设置配置"></a>通用设置配置</h2><h3 id="下载-解压安装包"><a href="#下载-解压安装包" class="headerlink" title="下载/解压安装包"></a>下载/解压安装包</h3><p>这里我们在root目录下创建一个download文件夹</p><p><code>mkdir download</code></p><p>再创建一个app文件夹用于存放解压的安装包</p><p><code>mkdir app</code></p><p>此时可以使用ls命令查看文件夹是否创建成功</p><p><code>ls</code></p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h3.png" alt="h3"></p><p>使用Xftp将下载好的压缩包传输到download文件夹下</p><p>接下来进入download目录</p><p><code>cd download</code></p><p><code>ls        //检查是否传输成功</code></p><p>将压缩包解压到app文件夹下</p><p><code>tar -zxvf jdk-8u231-linux-x64.tar.gz -C /root/app        //注意你的jdk版本和Hadoop版本，如果不同及时修改</code></p><p><code>tar -zxvf hadoop-2.7.7.tar.gz -C /root/app</code></p><p>接下来我们进入app目录，检查是否解压成功</p><p><code>cd /root/app</code></p><p><code>ls</code></p><p>可以看到：</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h4.png" alt="h4"></p><p>说明解压成功</p><h3 id="修改主机名"><a href="#修改主机名" class="headerlink" title="修改主机名"></a>修改主机名</h3><p><code>vi /etc/hostname</code></p><p>将配置文件内原有内容删除并修改为你要修改的主机名，本文修改主机名为“Hadoop”，修改完后保存并退出。<strong>注意：</strong>修改完后需要重启虚拟机才会生效</p><p>可以通过以下命令查看当前主机名</p><p><code>hostname</code></p><h3 id="配置hosts"><a href="#配置hosts" class="headerlink" title="配置hosts"></a>配置hosts</h3><p>打开hosts配置文件</p><p><code>vi /etc/hosts</code></p><p>修改hosts配置文件内容</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</span><br><span class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</span><br><span class="line">192.168.48.105 hadoop&#x2F;&#x2F;添加此项，内容为你的虚拟机主机IP+主机名</span><br></pre></td></tr></table></figure><h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">systemctl start firewalld&#x2F;&#x2F;立即启动防火墙</span><br><span class="line">systemctl stop firewalld&#x2F;&#x2F;立即关闭防火墙</span><br><span class="line">systemctl status firewalld &#x2F;&#x2F;查看防火墙状态</span><br><span class="line">systemctl disable firewalld&#x2F;&#x2F;开机禁用防火墙</span><br><span class="line">systemctl enable firewalld&#x2F;&#x2F;开机启动防火墙</span><br></pre></td></tr></table></figure><p>可以先通过命令查看防火墙状态，如果防火墙处于active状态需要先关闭防火墙</p><h3 id="设置ssh免密登录"><a href="#设置ssh免密登录" class="headerlink" title="设置ssh免密登录"></a>设置ssh免密登录</h3><p><code>ssh-keygen</code></p><p>输入后一路回车即可，最后会如下图</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h1.png" alt="h1"></p><p>此时会在 ~/.ssh 目录下生成 id_rsa 和 id_rsa.pub 两个文件，id_rsa 为私钥， id_rsa.pub 为公钥，紧接着将公钥文件复制成 authorized_keys 文件（存放远程免密登录的公钥,主要通过这个文件记录多台机器的公钥 ）</p><p><code>cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</code></p><p>此时无密码登录已经配置完成，我们测试一下</p><p><code>ssh hadoop</code></p><p>第一次会提示你是否继续操作，输入yes即可成功登录</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h2.png" alt="h2"></p><h3 id="配置Java环境变量"><a href="#配置Java环境变量" class="headerlink" title="配置Java环境变量"></a>配置Java环境变量</h3><p>打开环境变量配置文件</p><p><code>vi /etc/profile</code></p><p>在配置文件末尾加入</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME&#x3D;&#x2F;root&#x2F;app&#x2F;jdk1.8.0_231</span><br><span class="line">export PATH&#x3D;$PATH:$JAVA_HOME&#x2F;bin</span><br></pre></td></tr></table></figure><p>刷新配置文件</p><p><code>source /etc/profile</code></p><p>输入<code>java</code>，如果出现以下内容，说明Java配置成功</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h5.png" alt="h5"></p><h3 id="配置Hadoop环境变量"><a href="#配置Hadoop环境变量" class="headerlink" title="配置Hadoop环境变量"></a>配置Hadoop环境变量</h3><p>打开环境变量配置文件</p><p><code>vi /etc/profile</code></p><p>在配置文件末尾加入</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_HOME&#x3D;&#x2F;root&#x2F;app&#x2F;hadoop-2.7.7</span><br><span class="line">export PATH&#x3D;$PATH:$HADOOP_HOME&#x2F;bin:$HADOOP_HOME&#x2F;sbin</span><br></pre></td></tr></table></figure><p>刷新配置文件</p><p><code>source /etc/profile</code></p><p>输入<code>hadoop version</code>，如果出现以下内容，说明配置成功</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h6.png" alt="h6"></p><p><strong>注：</strong>Hadoop安装后默认即为单机模式，不需要修改其他配置文件，也就是说到这里，Hadoop单机模式已经配置成功，接下来我们开始伪分布式的配置</p><h2 id="伪分布式配置"><a href="#伪分布式配置" class="headerlink" title="伪分布式配置"></a>伪分布式配置</h2><p>首先进入到Hadoop的配置文件目录</p><p><code>cd /root/app/hadoop-2.7.7/etc/hadoop</code></p><h3 id="配置-hadoop-env-sh"><a href="#配置-hadoop-env-sh" class="headerlink" title="配置 hadoop-env.sh"></a>配置 hadoop-env.sh</h3><p><code>vi hadoop-env.sh</code></p><p>将JAVA_HOME修改为你的jdk安装路径</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h7.png" alt="h7"></p><h3 id="配置core-site-xml"><a href="#配置core-site-xml" class="headerlink" title="配置core-site.xml"></a>配置core-site.xml</h3><p><code>vi core-site.xml</code></p><p> 在<configuration>/</configuration>中间添加配置</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;!-- 指定HADOOP所使用的文件系统schema（URI），HDFS的老大（NameNode）的地址 --&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">       &lt;name&gt;fs.defaultFS&lt;&#x2F;name&gt;</span><br><span class="line">       &lt;value&gt;hdfs:&#x2F;&#x2F;hadoop:9000&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br><span class="line">&lt;!-- 指定hadoop运行时产生临时文件的存储目录 --&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">       &lt;name&gt;hadoop.tmp.dir&lt;&#x2F;name&gt;</span><br><span class="line">       &lt;value&gt;&#x2F;usr&#x2F;java&#x2F;jdk1.8.0_181&#x2F;tmp&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure><h3 id="配置hdfs-site-xml"><a href="#配置hdfs-site-xml" class="headerlink" title="配置hdfs-site.xml"></a>配置hdfs-site.xml</h3><p><code>vi hdfs-site.xml</code></p><p> 在<configuration>/</configuration>中间添加配置</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;!-- 指定HDFS副本的数量 --&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">          &lt;name&gt;dfs.replication&lt;&#x2F;name&gt;</span><br><span class="line">          &lt;value&gt;1&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure><h3 id="配置-mapred-site-xml"><a href="#配置-mapred-site-xml" class="headerlink" title="配置 mapred-site.xml"></a>配置 mapred-site.xml</h3><p><code>vi mapred-site.xml.template</code></p><p>在<configuration>/</configuration>中间添加配置</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;!--指定mr运行在yarn上--&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">　　&lt;name&gt;mapreduce.framework.name&lt;&#x2F;name&gt;</span><br><span class="line">　　&lt;value&gt;yarn&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure><p>然后将该文件复制一份并重命名</p><p><code>cp mapred-site.xml.template mapred-site.xml</code></p><h3 id="配置yarn-site-xml"><a href="#配置yarn-site-xml" class="headerlink" title="配置yarn-site.xml"></a>配置yarn-site.xml</h3><p><code>vi  yarn-site.xml</code></p><p>在<configuration>/</configuration>中间添加配置</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;!-- 指定YARN的老大（ResourceManager）的地址--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.resourcemanager.hostname&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;value&gt;hadoop&lt;&#x2F;value&gt;</span><br><span class="line">    &lt;&#x2F;property&gt;</span><br><span class="line">    &lt;!-- 指定reducer获取数据的方式--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.nodemanager.aux-services&lt;&#x2F;name&gt;</span><br><span class="line">        &lt;value&gt;mapreduce_shuffle&lt;&#x2F;value&gt;</span><br><span class="line">    &lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure><h3 id="格式化NameNode"><a href="#格式化NameNode" class="headerlink" title="格式化NameNode"></a>格式化NameNode</h3><p><code>cd /root/app/hadoop-2.7.7/bin</code></p><p><code>hdfs namenode -format</code></p><p><strong>注，此代码的作用是格式化文件，故只能执行一次，不要轻易执行第二次</strong></p><p>如果没有报错且在最后显示以下信息，说明格式化成功</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h8.png" alt="h8"></p><h3 id="启动Hadoop"><a href="#启动Hadoop" class="headerlink" title="启动Hadoop"></a>启动Hadoop</h3><p><code>cd /root/app/hadoop-2.7.7</code></p><p><code>sbin/start-all.sh</code></p><p>第一次启动可能需要输入几个yes，如下图所示代码</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h9.png" alt="h9"></p><p>接下来使用jps命令查看进程</p><p><code>jps</code></p><p>如果看到以下进程，恭喜你，Hadoop伪分布式搭建成功</p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h10.png" alt="h10"></p><p>在浏览器中输入地址登录HDFS管理页面：</p><p><code>192.168.48.105:50070</code></p><p><img src="http://q74q2iwtd.bkt.clouddn.com/h11.png" alt="h11"></p><p>至此，整个Hadoop伪分布式搭建就完成啦！</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;Hadoop单机模式-伪分布式搭建&quot;&gt;&lt;a href=&quot;#Hadoop单机模式-伪分布式搭建&quot; class=&quot;headerlink&quot; title=&quot;Hadoop单机模式/伪分布式搭建&quot;&gt;&lt;/a&gt;Hadoop单机模式/伪分布式搭建&lt;/h1&gt;&lt;h2 id=&quot;准备&quot;&gt;&lt;
+      
+    
+    </summary>
+    
+    
+    
+      <category term="Hadoop" scheme="lcjlee.com/tags/Hadoop/"/>
+    
+  </entry>
   
   <entry>
     <title>CentOS安装与联网</title>
@@ -27,33 +51,10 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;CentOS7虚拟机安装与联网&quot;&gt;&lt;a href=&quot;#CentOS7虚拟机安装与联网&quot; class=&quot;headerlink&quot; title=&quot;CentOS7虚拟机安装与联网&quot;&gt;&lt;/a&gt;CentOS7虚拟机安装与联网&lt;/h1&gt;&lt;p&gt;实验环境：VMware,CentOS7_x64&lt;/p&gt;
-&lt;h2 id=&quot;准备&quot;&gt;&lt;a href=&quot;#准备&quot; class=&quot;headerlink&quot; title=&quot;准备&quot;&gt;&lt;/a&gt;准备&lt;/h2&gt;&lt;p&gt;下载并安装VMware用于安装虚拟机，下载CentOS7镜像&lt;/p&gt;
-&lt;h2 id=&quot;CentOS7安装&quot;&gt;&lt;a href=&quot;#CentOS7安装&quot; class=&quot;headerlink&quot; title=&quot;CentOS7安装&quot;&gt;&lt;/a&gt;CentOS7安装&lt;/h2&gt;&lt;h3 id=&quot;选用安装配置类型&quot;&gt;&lt;a href=&quot;#选用安装配置类型&quot; class=&quot;headerlink&quot; title=&quot;选用安装配置类型&quot;&gt;&lt;/a&gt;选用安装配置类型&lt;/h3&gt;&lt;p&gt;选用自定义类型配置创建虚拟机&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://q74q2iwtd.bkt.clouddn.com/1.png&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
-&lt;h3 id=&quot;选择下载的镜像文件&quot;&gt;&lt;a href=&quot;#选择下载的镜像文件&quot; class=&quot;headerlink&quot; title=&quot;选择下载的镜像文件&quot;&gt;&lt;/a&gt;选择下载的镜像文件&lt;/h3&gt;&lt;p&gt;单击浏览，选择自己的镜像下载到的本地的位置&lt;/p&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="Hadoop" scheme="lcjlee.com/tags/Hadoop/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hadoop伪分布式搭建</title>
-    <link href="lcjlee.com/2020/03/14/Hadoop%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-    <id>lcjlee.com/2020/03/14/Hadoop%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F/</id>
-    <published>2020-03-14T12:48:32.000Z</published>
-    <updated>2020-03-14T13:14:41.923Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Hadoop伪分布式搭建"><a href="#Hadoop伪分布式搭建" class="headerlink" title="Hadoop伪分布式搭建"></a>Hadoop伪分布式搭建</h1><p>实验环境：VMware,CentOS7_x64,</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Hadoop伪分布式搭建&quot;&gt;&lt;a href=&quot;#Hadoop伪分布式搭建&quot; class=&quot;headerlink&quot; title=&quot;Hadoop伪分布式搭建&quot;&gt;&lt;/a&gt;Hadoop伪分布式搭建&lt;/h1&gt;&lt;p&gt;实验环境：VMware,CentOS7_x64,&lt;/p&gt;
-
+      
+      
+        &lt;h1 id=&quot;CentOS7虚拟机安装与联网&quot;&gt;&lt;a href=&quot;#CentOS7虚拟机安装与联网&quot; class=&quot;headerlink&quot; title=&quot;CentOS7虚拟机安装与联网&quot;&gt;&lt;/a&gt;CentOS7虚拟机安装与联网&lt;/h1&gt;&lt;p&gt;实验环境：VMware,CentOS
+      
     
     </summary>
     
@@ -76,12 +77,6 @@
     
       &lt;h1 id=&quot;win10-VScode配置C-C-环境&quot;&gt;&lt;a href=&quot;#win10-VScode配置C-C-环境&quot; class=&quot;headerlink&quot; title=&quot;win10 VScode配置C/C++环境&quot;&gt;&lt;/a&gt;win10 VScode配置C/C++环境&lt;/h1&gt;&lt;h2 id=&quot;一、下载需要的工具&quot;&gt;&lt;a href=&quot;#一、下载需要的工具&quot; class=&quot;headerlink&quot; title=&quot;一、下载需要的工具&quot;&gt;&lt;/a&gt;一、下载需要的工具&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;1.下载VScode&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;2.安装cpptools工具&lt;/strong&gt;&lt;br&gt;打开VScode，按照以下步骤安装&lt;br&gt;&lt;img src=&quot;https://s2.ax1x.com/2020/03/08/3zTZi6.png&quot; alt=&quot;1.png&quot;&gt;&lt;br&gt;&lt;strong&gt;3.安装code runner工具&lt;/strong&gt;&lt;br&gt;在VScode中编译文件，结束后并不会像我们经常使用的IDE一样，终端会停留在面前然后告诉你“按任意键继续”，在VScode中，编译运行完成后往往cmd会一闪而过，然后直接：&lt;br&gt;The program ‘d:\MinGW\Projicts\test\test.exe’ has exited with code 0 (0x00000000).  &lt;/p&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;p&gt;这个时候我们往往会使用在结束的return语句前加上&lt;strong&gt;getchar()&lt;/strong&gt; 或&lt;br&gt; &lt;strong&gt;system(“pause”)（注意：使用这个的时候需要加上头文件#include&amp;lt;stdlib.h&amp;gt;）&lt;/strong&gt;     &lt;/p&gt;
-&lt;p&gt;我们可以使用code runner工具来解决这个问题&lt;br&gt;首先和上面一样 找到这个插件并安装它     &lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://s2.ax1x.com/2020/03/08/3zT8ot.png&quot; alt=&quot;2.png&quot;&gt;&lt;/p&gt;
-&lt;p&gt;然后在如下打开界面中    &lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://s2.ax1x.com/2020/03/08/3zTJFP.png&quot; alt=&quot;3.png&quot;&gt;&lt;/p&gt;
     
     </summary>
     
@@ -102,14 +97,10 @@
     
     <summary type="html">
     
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&quot;Quick-Start&quot;&gt;&lt;a href=&quot;#Quick-Start&quot; class=&quot;headerlink&quot; title=&quot;Quick Start&quot;&gt;&lt;/a&gt;Quick Start&lt;/h2&gt;&lt;h3 id=&quot;Create-a-new-post&quot;&gt;&lt;a href=&quot;#Create-a-new-post&quot; class=&quot;headerlink&quot; title=&quot;Create a new post&quot;&gt;&lt;/a&gt;Create a new post&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ hexo new &lt;span class=&quot;string&quot;&gt;&quot;My New Post&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;More info: &lt;a href=&quot;https://hexo.io/docs/writing.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Writing&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;Run-server&quot;&gt;&lt;a href=&quot;#Run-server&quot; class=&quot;headerlink&quot; title=&quot;Run server&quot;&gt;&lt;/a&gt;Run server&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ hexo server&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;More info: &lt;a href=&quot;https://hexo.io/docs/server.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Server&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;Generate-static-files&quot;&gt;&lt;a href=&quot;#Generate-static-files&quot; class=&quot;headerlink&quot; title=&quot;Generate static files&quot;&gt;&lt;/a&gt;Generate static files&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ hexo generate&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
     
     </summary>
     
