@@ -27,10 +27,19 @@
     
     <summary type="html">
     
-      
-      
-        &lt;h1 id=&quot;基于Hadoop的Spark集群搭建&quot;&gt;&lt;a href=&quot;#基于Hadoop的Spark集群搭建&quot; class=&quot;headerlink&quot; title=&quot;基于Hadoop的Spark集群搭建&quot;&gt;&lt;/a&gt;基于Hadoop的Spark集群搭建&lt;/h1&gt;&lt;h2 id=&quot;准
-      
+      &lt;h1 id=&quot;基于Hadoop的Spark集群搭建&quot;&gt;&lt;a href=&quot;#基于Hadoop的Spark集群搭建&quot; class=&quot;headerlink&quot; title=&quot;基于Hadoop的Spark集群搭建&quot;&gt;&lt;/a&gt;基于Hadoop的Spark集群搭建&lt;/h1&gt;&lt;h2 id=&quot;准备&quot;&gt;&lt;a href=&quot;#准备&quot; class=&quot;headerlink&quot; title=&quot;准备&quot;&gt;&lt;/a&gt;准备&lt;/h2&gt;&lt;h3 id=&quot;Spark三种运行模式简介&quot;&gt;&lt;a href=&quot;#Spark三种运行模式简介&quot; class=&quot;headerlink&quot; title=&quot;Spark三种运行模式简介&quot;&gt;&lt;/a&gt;Spark三种运行模式简介&lt;/h3&gt;&lt;h4 id=&quot;Local模式&quot;&gt;&lt;a href=&quot;#Local模式&quot; class=&quot;headerlink&quot; title=&quot;Local模式&quot;&gt;&lt;/a&gt;Local模式&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Local 模式是最简单的一种Spark运行方式，它采用单节点多线程（cpu)方式运行，local模式是一种OOTB（开箱即用）的方式，只需要在spark-env.sh导出JAVA_HOME,无需其他任何配置即可使用，因而常用于开发和学习&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;方式：./spark-shell - -master local[n] ，n代表线程数&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;Standalone模式&quot;&gt;&lt;a href=&quot;#Standalone模式&quot; class=&quot;headerlink&quot; title=&quot;Standalone模式&quot;&gt;&lt;/a&gt;Standalone模式&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;Spark可以通过部署与Yarn的架构类似的框架来提供自己的集群模式，该集群模式的架构设计与HDFS和Yarn大相径庭，都是由一个主节点多个从节点组成，在Spark 的Standalone模式中，主，即为master;从，即为worker.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;Spark-on-Yarn&quot;&gt;&lt;a href=&quot;#Spark-on-Yarn&quot; class=&quot;headerlink&quot; title=&quot;Spark on Yarn&quot;&gt;&lt;/a&gt;Spark on Yarn&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;简而言之，Spark on Yarn 模式就是将Spark应用程序跑在Yarn集群之上，通过Yarn资源调度将executor启动在container中，从而完成driver端分发给executor的各个任务。将Spark作业跑在Yarn上，首先需要启动Yarn集群，然后通过spark-shell或spark-submit的方式将作业提交到Yarn上运行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;实验环境&quot;&gt;&lt;a href=&quot;#实验环境&quot; class=&quot;headerlink&quot; title=&quot;实验环境&quot;&gt;&lt;/a&gt;实验环境&lt;/h3&gt;
     
     </summary>
     
@@ -51,10 +60,12 @@
     
     <summary type="html">
     
-      
-      
-        &lt;h1 id=&quot;Hadoop单机模式-伪分布式搭建&quot;&gt;&lt;a href=&quot;#Hadoop单机模式-伪分布式搭建&quot; class=&quot;headerlink&quot; title=&quot;Hadoop单机模式/伪分布式搭建&quot;&gt;&lt;/a&gt;Hadoop单机模式/伪分布式搭建&lt;/h1&gt;&lt;h2 id=&quot;准备&quot;&gt;&lt;
-      
+      &lt;h1 id=&quot;Hadoop单机模式-伪分布式搭建&quot;&gt;&lt;a href=&quot;#Hadoop单机模式-伪分布式搭建&quot; class=&quot;headerlink&quot; title=&quot;Hadoop单机模式/伪分布式搭建&quot;&gt;&lt;/a&gt;Hadoop单机模式/伪分布式搭建&lt;/h1&gt;&lt;h2 id=&quot;准备&quot;&gt;&lt;a href=&quot;#准备&quot; class=&quot;headerlink&quot; title=&quot;准备&quot;&gt;&lt;/a&gt;准备&lt;/h2&gt;&lt;h3 id=&quot;Hadoop三种安装模式简介&quot;&gt;&lt;a href=&quot;#Hadoop三种安装模式简介&quot; class=&quot;headerlink&quot; title=&quot;Hadoop三种安装模式简介&quot;&gt;&lt;/a&gt;Hadoop三种安装模式简介&lt;/h3&gt;&lt;p&gt;Hadoop共有三种安装模式可以使用：单机模式、伪分布式、完全分布式&lt;/p&gt;
+&lt;p&gt;1.Hadoop单机模式&lt;br&gt;单机模式是Hadoop默认的安装模式，这种安装模式主要就是并不配置更多的配置文件，只是保守的去设置默认的几个配置文件中的初始化参数，他并不与其他节点进行交互，并且也不使用HDFS文件系统，它主要就是为了调试MapReduce程序而生。&lt;/p&gt;
+&lt;p&gt;2.Hadoop伪分布式安装模式&lt;br&gt;Hadoop伪分布式安装，需要配置5个常规的配置文件（XML），并且这里涉及到了NameNode和DataNode节点交互问题，而且NameNode和DataNode在同一个节点上，还需要配置互信。其实从严格意义上来讲，我们的伪分布式集群，就已经可以称之为真正意义上的集群了，而且这里也包含了hdfs和MapReduce所有组件，只不过就是所有组件在同一个节点上而已。&lt;/p&gt;
+&lt;p&gt;3.Hadoop完全分布式安装模式&lt;br&gt;Hadoop完全分布式集群主要分为：常规Hadoop完全分布式集群和Hadoop HA集群（这里我们主要针对的是NameNode个数和NameNode的高可用保障机制而言）。由此可知较伪分布式集群而言，我们的完全分布式集群，所有处理节点并不在同一个节点上，而是在多个节点上。&lt;/p&gt;
+&lt;h3 id=&quot;搭建环境准备&quot;&gt;&lt;a href=&quot;#搭建环境准备&quot; class=&quot;headerlink&quot; title=&quot;搭建环境准备&quot;&gt;&lt;/a&gt;搭建环境准备&lt;/h3&gt;&lt;p&gt;这里介绍本文所用的搭建环境&lt;/p&gt;
+&lt;p&gt;1、虚拟机：使用VMware15.5,XShell6&amp;amp;Xftp,CentOS7&lt;/p&gt;
     
     </summary>
     
@@ -75,10 +86,11 @@
     
     <summary type="html">
     
-      
-      
-        &lt;h1 id=&quot;CentOS7虚拟机安装与联网&quot;&gt;&lt;a href=&quot;#CentOS7虚拟机安装与联网&quot; class=&quot;headerlink&quot; title=&quot;CentOS7虚拟机安装与联网&quot;&gt;&lt;/a&gt;CentOS7虚拟机安装与联网&lt;/h1&gt;&lt;p&gt;实验环境：VMware,CentOS
-      
+      &lt;h1 id=&quot;CentOS7虚拟机安装与联网&quot;&gt;&lt;a href=&quot;#CentOS7虚拟机安装与联网&quot; class=&quot;headerlink&quot; title=&quot;CentOS7虚拟机安装与联网&quot;&gt;&lt;/a&gt;CentOS7虚拟机安装与联网&lt;/h1&gt;&lt;p&gt;实验环境：VMware,CentOS7_x64&lt;/p&gt;
+&lt;h2 id=&quot;准备&quot;&gt;&lt;a href=&quot;#准备&quot; class=&quot;headerlink&quot; title=&quot;准备&quot;&gt;&lt;/a&gt;准备&lt;/h2&gt;&lt;p&gt;下载并安装VMware用于安装虚拟机，下载CentOS7镜像&lt;/p&gt;
+&lt;h2 id=&quot;CentOS7安装&quot;&gt;&lt;a href=&quot;#CentOS7安装&quot; class=&quot;headerlink&quot; title=&quot;CentOS7安装&quot;&gt;&lt;/a&gt;CentOS7安装&lt;/h2&gt;&lt;h3 id=&quot;选用安装配置类型&quot;&gt;&lt;a href=&quot;#选用安装配置类型&quot; class=&quot;headerlink&quot; title=&quot;选用安装配置类型&quot;&gt;&lt;/a&gt;选用安装配置类型&lt;/h3&gt;&lt;p&gt;选用自定义类型配置创建虚拟机&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://q74q2iwtd.bkt.clouddn.com/1.png&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;选择下载的镜像文件&quot;&gt;&lt;a href=&quot;#选择下载的镜像文件&quot; class=&quot;headerlink&quot; title=&quot;选择下载的镜像文件&quot;&gt;&lt;/a&gt;选择下载的镜像文件&lt;/h3&gt;&lt;p&gt;单击浏览，选择自己的镜像下载到的本地的位置&lt;/p&gt;
     
     </summary>
     
@@ -101,6 +113,12 @@
     
       &lt;h1 id=&quot;win10-VScode配置C-C-环境&quot;&gt;&lt;a href=&quot;#win10-VScode配置C-C-环境&quot; class=&quot;headerlink&quot; title=&quot;win10 VScode配置C/C++环境&quot;&gt;&lt;/a&gt;win10 VScode配置C/C++环境&lt;/h1&gt;&lt;h2 id=&quot;一、下载需要的工具&quot;&gt;&lt;a href=&quot;#一、下载需要的工具&quot; class=&quot;headerlink&quot; title=&quot;一、下载需要的工具&quot;&gt;&lt;/a&gt;一、下载需要的工具&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;1.下载VScode&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;2.安装cpptools工具&lt;/strong&gt;&lt;br&gt;打开VScode，按照以下步骤安装&lt;br&gt;&lt;img src=&quot;https://s2.ax1x.com/2020/03/08/3zTZi6.png&quot; alt=&quot;1.png&quot;&gt;&lt;br&gt;&lt;strong&gt;3.安装code runner工具&lt;/strong&gt;&lt;br&gt;在VScode中编译文件，结束后并不会像我们经常使用的IDE一样，终端会停留在面前然后告诉你“按任意键继续”，在VScode中，编译运行完成后往往cmd会一闪而过，然后直接：&lt;br&gt;The program ‘d:\MinGW\Projicts\test\test.exe’ has exited with code 0 (0x00000000).  &lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;p&gt;这个时候我们往往会使用在结束的return语句前加上&lt;strong&gt;getchar()&lt;/strong&gt; 或&lt;br&gt; &lt;strong&gt;system(“pause”)（注意：使用这个的时候需要加上头文件#include&amp;lt;stdlib.h&amp;gt;）&lt;/strong&gt;     &lt;/p&gt;
+&lt;p&gt;我们可以使用code runner工具来解决这个问题&lt;br&gt;首先和上面一样 找到这个插件并安装它     &lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://s2.ax1x.com/2020/03/08/3zT8ot.png&quot; alt=&quot;2.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;然后在如下打开界面中    &lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://s2.ax1x.com/2020/03/08/3zTJFP.png&quot; alt=&quot;3.png&quot;&gt;&lt;/p&gt;
     
     </summary>
     
@@ -121,10 +139,14 @@
     
     <summary type="html">
     
-      
-      
-        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
-      
+      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;Quick-Start&quot;&gt;&lt;a href=&quot;#Quick-Start&quot; class=&quot;headerlink&quot; title=&quot;Quick Start&quot;&gt;&lt;/a&gt;Quick Start&lt;/h2&gt;&lt;h3 id=&quot;Create-a-new-post&quot;&gt;&lt;a href=&quot;#Create-a-new-post&quot; class=&quot;headerlink&quot; title=&quot;Create a new post&quot;&gt;&lt;/a&gt;Create a new post&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ hexo new &lt;span class=&quot;string&quot;&gt;&quot;My New Post&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;More info: &lt;a href=&quot;https://hexo.io/docs/writing.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Writing&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;Run-server&quot;&gt;&lt;a href=&quot;#Run-server&quot; class=&quot;headerlink&quot; title=&quot;Run server&quot;&gt;&lt;/a&gt;Run server&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ hexo server&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;More info: &lt;a href=&quot;https://hexo.io/docs/server.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Server&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;Generate-static-files&quot;&gt;&lt;a href=&quot;#Generate-static-files&quot; class=&quot;headerlink&quot; title=&quot;Generate static files&quot;&gt;&lt;/a&gt;Generate static files&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ hexo generate&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
     
     </summary>
     
